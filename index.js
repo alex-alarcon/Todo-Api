@@ -8,6 +8,11 @@ const Todo = require('./models/todo')
 
 const app = express()
 const port = process.env.PORT || 3000
+const DB = process.env.APP_CONFIG.db || 'c518098f5dc47219b22252ba94b26d5e'
+const host = process.env.APP_CONFIG.hostString || '6a.mongo.evennode.com:27017,6b.mongo.evennode.com:27017'
+const username = process.env.APP_CONFIG.user || 'c518098f5dc47219b22252ba94b26d5e'
+const password = ''
+
 
 app.use(bodyParser.urlencoded({
   extended: false
@@ -128,7 +133,8 @@ app.delete('/api/todo/:todoId', (req, res) => {
   })
 })
 
-mongoose.connect('mongodb://localhost:27017/todos', (err, res) => {
+//mongoose.connect('mongodb://localhost:27017/todos', (err, res) => {
+mongoose.connect('mongodb://'+host+'/todos', (err, res) => {
   if(err) throw err
   console.log('Conexion establecida con la DB')
   
