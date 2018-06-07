@@ -8,11 +8,6 @@ const Todo = require('./models/todo')
 
 const app = express()
 const port = process.env.PORT || 3000
-const DB = process.env.APP_CONFIG.db || 'c518098f5dc47219b22252ba94b26d5e'
-const host = process.env.APP_CONFIG.hostString || '6a.mongo.evennode.com:27017,6b.mongo.evennode.com:27017'
-const username = process.env.APP_CONFIG.user || 'c518098f5dc47219b22252ba94b26d5e'
-const password = ''
-
 
 app.use(bodyParser.urlencoded({
   extended: false
@@ -23,10 +18,13 @@ app.use(bodyParser.json())
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
   next();
 });
 
 app.get('/hola/:name', (req, res) => {
+  const url = req.protocol + '://' + req.get('host') + req.originalUrl;
+  console.log(url)
   res.send({
     message: `hola ${req.params.name}!`
   })  
@@ -46,7 +44,8 @@ app.get('/api/todo', (req, res) => {
       })  
     }
     
-    res.status(200).send({ todos })  
+    res.status(200).send(todos) 
+    console.log(todos)
   })
 })
 
@@ -66,7 +65,7 @@ app.get('/api/todo/:todoId', (req, res) => {
       })  
     }
     
-    res.status(200).send({ todo })
+    res.status(200).send(todo)
   })
 })
 
@@ -76,7 +75,7 @@ app.post('/api/todo', (req, res) => {
   
   let todo = Todo()
   todo.description = req.body.description
-  todo.state = req.body.state
+  todo.isCompleted = req.body.isCompleted
   todo.createdAt = req.body.createdAt
   todo.updatedAt = req.body.updatedAt
   todo.completedAt = req.body.completedAt
@@ -88,9 +87,7 @@ app.post('/api/todo', (req, res) => {
       })
       throw err
     }
-    res.status(200).send({
-      todo: todoStored
-    })
+    res.status(200).send(todoStored)
   })
 })
 
@@ -106,6 +103,8 @@ app.put('/api/todo/:todoId', (req, res) => {
     }
     
     res.status(200).send({ todoUpdated })
+    
+    console.log("----" , update)
   })
 })
 
@@ -127,14 +126,14 @@ app.delete('/api/todo/:todoId', (req, res) => {
       }
       
       res.status(200).send({
-        message: `Todo have benn eiminated`
+        message: `Todo have been eiminated`
       })
     })
   })
 })
 
-//mongoose.connect('mongodb://localhost:27017/todos', (err, res) => {
-mongoose.connect('mongodb://'+host+'/todos', (err, res) => {
+mongoose.connect('mongodb://localhost:27017/todos', (err, res) => {
+//mongoose.connect('mongodb://'+host+'/todos', (err, res) => {
   if(err) throw err
   console.log('Conexion establecida con la DB')
   

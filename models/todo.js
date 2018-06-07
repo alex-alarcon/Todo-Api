@@ -5,10 +5,10 @@ const Schema = mongoose.Schema
 
 const TodoSchema = Schema({
   description: String,
-  state: Boolean,
+  isCompleted: Boolean,
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
-  completedAt: { type: Date, default: Date.now }
+  completedAt: { type: Date, default: null }
 })
 
 module.exports = mongoose.model('Todo', TodoSchema)
